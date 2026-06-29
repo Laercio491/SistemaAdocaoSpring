@@ -49,16 +49,16 @@ document.getElementById("loginForm")
             let funcionario = await resposta.json();
 
             if (funcionario) {
-                window.location.href = "funcionario.html";
+                window.location.href = "/funcionario.html";
                 return;
             }
 
         }
 
-        window.location.href = "cliente.html";
+        window.location.href = "/cliente.html";
 
     } catch (erro) {
-        window.location.href = "cliente.html";
+        window.location.href = "/cliente.html";
     }
 
 });

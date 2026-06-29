@@ -10,6 +10,7 @@ import com.Camaleao.SistemaAdocaoSpring.service.FuncionarioService;
 
 @RestController
 @RequestMapping("/funcionarios")
+@CrossOrigin("*")
 public class FuncionarioController {
 
     @Autowired

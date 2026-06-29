@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/adotantes")
+@CrossOrigin("*")
 public class AdotanteController {
 
     @Autowired

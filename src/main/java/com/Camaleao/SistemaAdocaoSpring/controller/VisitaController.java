@@ -10,18 +10,21 @@ import com.Camaleao.SistemaAdocaoSpring.service.VisitaService;
 
 @RestController
 @RequestMapping("/visitas")
+@CrossOrigin("*")
 public class VisitaController {
 
-    @Autowired
-    private VisitaService service;
 
-    @PostMapping
-    public Visita cadastrar(@RequestBody Visita visita) {
-        return service.cadastrar(visita);
-    }
+@Autowired
+private VisitaService service;
 
-    @GetMapping
-    public List<Visita> listar() {
-        return service.listar();
-    }
+@PostMapping
+public Visita cadastrar(@RequestBody Visita visita) {
+    return service.cadastrar(visita);
+}
+
+@GetMapping
+public List<Visita> listar() {
+    return service.listar();
+}
+
 }

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Animais</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Animais</h1>
+    </header>
+<button onclick="window.location.href='funcionario.html'">Voltar</button>
+    <section class="formulario">
+
+        <form id="formAnimal">
+
+            <input id="nome" placeholder="Nome">
+            <input id="idade" type="number" placeholder="Idade">
+            <input id="raca" placeholder="Raça">
+            <input id="porte" placeholder="Porte">
+
+            <select id="castracao">
+                <option value="true">Castrado</option>
+                <option value="false">Não castrado</option>
+            </select>
+
+            <input id="data_chegou" type="date">
+            <input id="historico" placeholder="Histórico">
+
+            <select id="adotado">
+                <option value="false">Disponível</option>
+                <option value="true">Adotado</option>
+            </select>
+
+            <button type="submit">Cadastrar</button>
+
+        </form>
+
+    </section>
+    <script>
+
+        const API = "http://localhost:8080";
+
+        async function listarAnimais() {
+
+            let resposta = await fetch(`${API}/animais`);
+            let animais = await resposta.json();
+
+            let container = document.getElementById("listaAnimais");
+            container.innerHTML = "";
+
+            animais.forEach(animal => {
+
+                container.innerHTML += `
+            <div class="card">
+
+                <h2>${animal.nome}</h2>
+
+                <p><strong>Raça:</strong> ${animal.raca}</p>
+
+                <p><strong>Idade:</strong> ${animal.idade}</p>
+
+                <p><strong>Porte:</strong> ${animal.porte}</p>
+
+            </div>
+        `;
+
+            });
+
+        }
+
+        document.getElementById("formAnimal")
+            .addEventListener("submit", async function (event) {
+
+                event.preventDefault();
+
+                let animal = {
+                    nome: document.getElementById("nome").value,
+                    idade: Number(document.getElementById("idade").value),
+                    raca: document.getElementById("raca").value,
+                    porte: document.getElementById("porte").value,
+                    castracao: document.getElementById("castracao").value === "true",
+                    dataChegou: document.getElementById("data_chegou").value || null,
+                    historicoAdo: document.getElementById("historico").value,
+                    adotado: document.getElementById("adotado").value === "true"
+                };
+
+                console.log(JSON.stringify(animal));
+                let resposta = await fetch(`${API}/animais`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(animal)
+                });
+
+                let texto = await resposta.text();
+
+                console.log(texto);
+
+                if (resposta.ok) {
+
+                    alert("Animal cadastrado com sucesso");
+                    listarAnimais();
+
+                } else {
+
+                    alert("Erro:\n" + texto);
+
+                }
+
+                document.getElementById("buscarForm")
+                    .addEventListener("submit", async function (event) {
+
+                        event.preventDefault();
+
+                        let id = document.getElementById("buscarId").value;
+
+                        let resposta = await fetch(`${API}/animais/${id}`);
+
+                        if (resposta.ok) {
+
+                            let animal = await resposta.json();
+
+                            alert(
+                                "Animal encontrado!\n\n" +
+                                "Nome: " + animal.nome + "\n" +
+                                "Raça: " + animal.raca + "\n" +
+                                "Idade: " + animal.idade
+                            );
+
+                        } else {
+                            alert("Animal não encontrado");
+                        }
+
+                    });
+
+                listarAnimais();
+            });
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>
+        Adotantes
+    </title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>
+            Adotantes Cadastrados
+        </h1>
+
+    </header>
+<button onclick="window.location.href='funcionario.html'">Voltar</button>
+    <section class="cards" id="listaAdotantes">
+
+    </section>
+
+    <section class="formulario">
+
+        <h2>
+            Buscar Adotante
+        </h2>
+
+        <form id="buscarForm">
+
+            <input type="text" id="nomeAdotante" placeholder="Digite o nome">
+
+            <button type="submit">
+
+                Buscar
+
+            </button>
+
+        </form>
+
+    </section>
+
+    <script>
+
+        const API = "http://localhost:8080";
+
+        async function listar() {
+
+            let resposta = await fetch(`${API}/adotantes`);
+            let adotantes = await resposta.json();
+
+            let container = document.getElementById("listaAdotantes");
+            container.innerHTML = "";
+
+            adotantes.forEach(adotante => {
+
+                container.innerHTML += `
+            <div class="card"
+                 onclick="abrirAdotante(${adotante.idadotante})">
+
+                <h2>${adotante.nome}</h2>
+
+                <p><strong>CPF:</strong> ${adotante.cpf}</p>
+
+                <p><strong>Telefone:</strong> ${adotante.telefone}</p>
+
+            </div>
+        `;
+
+            });
+
+        }
+
+        async function abrirAdotante(id) {
+
+            let resposta = await fetch(`${API}/adotantes/${id}`);
+            let adotante = await resposta.json();
+
+            alert(
+                "Adotante Selecionado!\n\n" +
+                "Nome: " + adotante.nome + "\n" +
+                "CPF: " + adotante.cpf + "\n" +
+                "Telefone: " + adotante.telefone + "\n" +
+                "Endereço: " + adotante.endereco
+            );
+
+        }
+
+        document.getElementById("buscarForm")
+            .addEventListener("submit", async function (event) {
+
+                event.preventDefault();
+
+                let nome = document.getElementById("nomeAdotante").value;
+
+                let resposta = await fetch(`${API}/adotantes`);
+                let adotantes = await resposta.json();
+
+                let encontrado = adotantes.find(a => a.nome.toLowerCase() === nome.toLowerCase());
+
+                if (encontrado) {
+
+                    alert(
+                        "Adotante encontrado!\n\n" +
+                        "Nome: " + encontrado.nome + "\n" +
+                        "CPF: " + encontrado.cpf + "\n" +
+                        "Telefone: " + encontrado.telefone
+                    );
+
+                } else {
+                    alert("Adotante não encontrado");
+                }
+
+            });
+
+        listar();
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Visitas</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    
+    <h1>Visitas Agendadas</h1>
+</header>
+<button onclick="window.location.href='funcionario.html'">Voltar</button>
+<section class="cards" id="listaVisitas"></section>
+
+<script>
+
+const API = "http://localhost:8080";
+
+let visitas = [];
+
+async function listar() {
+
+    let resposta = await fetch(`${API}/visitas`);
+    visitas = await resposta.json();
+
+    console.log(visitas);
+
+    let container = document.getElementById("listaVisitas");
+    container.innerHTML = "";
+
+    visitas.forEach(visita => {
+
+        container.innerHTML += `
+            <div class="card">
+
+                <h2>Visita ${visita.idVisitas}</h2>
+
+                <p><strong>Data:</strong> ${visita.dataVisita}</p>
+
+                <p><strong>Animal:</strong> ${visita.animal?.nome}</p>
+
+                <p><strong>Adotante:</strong> ${visita.adotante?.nome}</p>
+
+            </div>
+        `;
+
+    });
+
+}
+
+listar();
+
+</script>
+
+</body>
+
+</html>

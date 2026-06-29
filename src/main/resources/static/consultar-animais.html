@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Consultar Animais</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Animais Disponíveis</h1>
+</header>
+<button onclick="window.location.href='cliente.html'">Voltar</button>
+<section class="cards" id="listaAnimais"></section>
+
+<section class="formulario">
+
+    <h2>Buscar Animal por Nome</h2>
+
+    <form id="buscarForm">
+
+        <input type="text" id="nomeAnimal" placeholder="Digite o nome">
+        <button type="submit">Buscar</button>
+
+    </form>
+
+</section>
+
+<script>
+
+const API = "http://localhost:8080";
+let animais = [];
+
+async function listar() {
+
+    let resposta = await fetch(`${API}/animais`);
+    animais = await resposta.json();
+
+    let container = document.getElementById("listaAnimais");
+    container.innerHTML = "";
+
+    animais.forEach(animal => {
+
+        container.innerHTML += `
+            <div class="card" onclick="abrirAnimal(${animal.idAnimal})">
+
+                <h2>${animal.nome}</h2>
+
+                <p><strong>Raça:</strong> ${animal.raca}</p>
+
+                <p><strong>Status:</strong> ${animal.adotado ? "Adotado" : "Disponível"}</p>
+
+            </div>
+        `;
+
+    });
+
+}
+
+async function abrirAnimal(id) {
+
+    let resposta = await fetch(`${API}/animais/${id}`);
+
+    if (resposta.ok) {
+
+        let animal = await resposta.json();
+
+        alert(
+            "Animal selecionado!\n\n" +
+            "Nome: " + animal.nome + "\n" +
+            "Raça: " + animal.raca + "\n" +
+            "Status: " + (animal.adotado ? "Adotado" : "Disponível")
+        );
+
+    } else {
+        alert("Animal não encontrado");
+    }
+
+}
+
+document.getElementById("buscarForm")
+.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    let nome = document.getElementById("nomeAnimal").value.toLowerCase();
+
+    let resposta = await fetch(`${API}/animais`);
+    let animais = await resposta.json();
+
+    let animal = animais.find(a =>
+        a.nome.toLowerCase() === nome
+    );
+
+    if (animal) {
+
+        alert(
+            "Animal encontrado!\n\n" +
+            "Nome: " + animal.nome + "\n" +
+            "Raça: " + animal.raca + "\n" +
+            "Status: " + (animal.adotado ? "Adotado" : "Disponível")
+        );
+
+    } else {
+        alert("Animal não encontrado");
+    }
+
+});
+
+listar();
+
+</script>
+
+</body>
+
+</html>
